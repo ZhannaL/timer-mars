@@ -1,0 +1,60 @@
+.otherPlayers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+.nextGenField {
+  width: 100%;
+  height: 40vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btnNextGen {
+  width: 100%;
+  height: 10vh;
+  margin: auto 0;
+}
+
+.btnsBottom {
+  margin-top: auto;
+  display: grid;
+  width: 100%;
+  grid-template-areas:
+    'btnPlay btnPlay btnPlay . btnPass btnPass btnPass btnPass'
+    '. . . . . . . . '
+    'btnFinish btnFinish btnFinish btnFinish btnFinish btnFinish . btnQR';
+
+  grid-template-rows: 2fr 10px 1fr;
+  grid-template-columns: 1fr 1fr 1fr 10px 1fr 1fr 10px 1fr;
+}
+
+.btnPlay {
+  grid-area: btnPlay;
+}
+
+.btnPass {
+  grid-area: btnPass;
+}
+
+.btnFinish {
+  grid-area: btnFinish;
+}
+
+.btnFinish > * {
+  width: 100%;
+}
+
+.btnQR {
+  grid-area: btnQR;
+}
+
+.btnQR svg {
+  width: 25px;
+  height: 25px;
+}

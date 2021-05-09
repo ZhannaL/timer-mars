@@ -1,0 +1,26 @@
+.addPart {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 70%;
+  margin-top: 15px;
+}
+
+.addBtn {
+  align-self: baseline;
+}
+
+.rightBtn {
+  margin-left: auto;
+}
+
+.btnBottom {
+  width: 100%;
+  display: flex;
+}
+
+@media screen and (max-width: 640px) {
+  .addPart {
+    width: 100%;
+  }
+}

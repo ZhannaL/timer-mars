@@ -1,0 +1,1 @@
+export { SetNamesToColorItem } from './SetNamesToColorItem';

@@ -1,0 +1,25 @@
+.draggableList {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.btnBack {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.btnStartGame {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+}
+
+.rightBtn {
+  width: 100%;
+}
+
+.rightBtn > * {
+  width: 100%;
+}

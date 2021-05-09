@@ -1,0 +1,15 @@
+.linkPart {
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+}
+
+.link {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+
+  margin: 0 5px;
+  padding: 5px 15px;
+}

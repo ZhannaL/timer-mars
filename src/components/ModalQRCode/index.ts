@@ -1,0 +1,1 @@
+export { ModalQRCode } from './ModalQRCode';

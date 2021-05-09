@@ -1,0 +1,25 @@
+.currentItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+}
+
+.name {
+  text-transform: capitalize;
+}
+
+.nextText {
+  margin-top: 60px;
+
+  display: flex;
+  align-items: center;
+}
+
+.btnsPlayNext {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+}
