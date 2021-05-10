@@ -13,7 +13,7 @@ export const useCountdown = (
 
   useEffect(() => {
     const onNextTick = () => {
-      if (time === 0) {
+      if (time <= 0) {
         setTime(0);
         onTimeOver();
       }

@@ -13,7 +13,6 @@ import * as styles from './game.module.css';
 
 export const Game = (): JSX.Element => {
   const [gameSessionState, setGameSessionState] = useGameSessionInfo();
-  console.log(gameSessionState);
   const [currGameSessionState, setCurrGameSessionState] = useState(gameSessionState.players);
   const [generation, setGeneration] = useState(gameSessionState.generation);
   const [isActiveTimer, setIsActiveTimer] = useState(gameSessionState.isActive);
@@ -34,7 +33,6 @@ export const Game = (): JSX.Element => {
   };
 
   const onPause = (updatedGameSession: Array<GameSessionInfo>) => {
-    console.log(updatedGameSession);
     setGameSessionState({
       players: [...updatedGameSession],
       currPlayer: currPlayerIndex,
@@ -109,7 +107,7 @@ export const Game = (): JSX.Element => {
 
   useEffect(() => {
     const onUpdateState = () => {
-      if (isActiveTimer) {
+      if (isActiveTimer && !isAllPassed()) {
         const updatedSession = currGameSessionState.map((el, index) => {
           if (index === currPlayerIndex) {
             return {
@@ -287,12 +285,23 @@ export const Game = (): JSX.Element => {
                 return el;
               });
               onPlay(updatedSession);
+            } else {
+              const updatedSession = currGameSessionState.map((el, index) => {
+                if (index === currPlayerIndex) {
+                  return {
+                    ...el,
 
-              setCurrPlayerIndex(
-                currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
-              );
-              setIsActiveTimer(true);
+                    hasPassed: true,
+                  };
+                }
+                return el;
+              });
+              onPlay(updatedSession);
             }
+            setCurrPlayerIndex(
+              currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
+            );
+            setIsActiveTimer(true);
           }}
         >
           pass
@@ -306,7 +315,7 @@ export const Game = (): JSX.Element => {
           </Button>
         </Link>
         <Button
-          disabled={isFinishedGame() || isAllPassed()}
+          disabled={isFinishedGame()}
           onClick={() => setIsOpenModalQR(true)}
           className={styles.btnQR}
           variant="contained"
