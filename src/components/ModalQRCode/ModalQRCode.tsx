@@ -3,8 +3,9 @@ import { Box, Dialog, DialogContent, DialogTitle, IconButton, Typography } from 
 import { useGameSessionInfo } from 'Provider/GameSessionContex';
 import { useFriends } from 'Provider/FriendsContex';
 import { useTimeInfo } from 'Provider/TimeContex';
-import { copyToClipboard } from 'helpers/copyToClipBoard';
+import { copyToClipboard } from 'utils/copyToClipBoard';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
+import { useRef } from 'react';
 import { getQueryString } from './formQuery';
 import * as styles from './modalQRCode.module.css';
 
@@ -17,6 +18,7 @@ export const ModalQRCode = ({ isOpen, onClose }: Props): JSX.Element => {
   const [friendsState] = useFriends();
   const [timeState] = useTimeInfo();
   const [gameSessionState] = useGameSessionInfo();
+  const ref = useRef<HTMLDivElement>(null);
 
   const linkToShare = getQueryString(gameSessionState, friendsState, timeState);
   return (
@@ -27,7 +29,7 @@ export const ModalQRCode = ({ isOpen, onClose }: Props): JSX.Element => {
         </Typography>
       </DialogTitle>
       <DialogContent dividers>
-        <Typography align="center" gutterBottom>
+        <Typography align="center" gutterBottom component="div">
           <Box lineHeight={2} fontWeight="fontWeightBold">
             Scan QR code
           </Box>
@@ -37,8 +39,8 @@ export const ModalQRCode = ({ isOpen, onClose }: Props): JSX.Element => {
         </Typography>
       </DialogContent>
 
-      <DialogContent dividers>
-        <Typography align="center">
+      <DialogContent dividers ref={ref}>
+        <Typography align="center" component="div">
           <Box lineHeight={2} fontWeight="fontWeightBold">
             or copy link
           </Box>
@@ -50,7 +52,7 @@ export const ModalQRCode = ({ isOpen, onClose }: Props): JSX.Element => {
           <IconButton
             color="primary"
             onClick={() => {
-              copyToClipboard(linkToShare);
+              if (ref.current) copyToClipboard(linkToShare, ref.current);
             }}
           >
             <FileCopyOutlinedIcon />

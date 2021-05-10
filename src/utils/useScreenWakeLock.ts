@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 export const useScreenWakeLock = (): void => {
   useEffect(() => {
-    console.log(window.innerWidth);
+    // console.log(window.innerWidth, document.body.clientWidth);
     if (!navigator.wakeLock || window.innerWidth > 768 || document.body.clientWidth > 768) return;
 
     const wakeLockPromise = navigator.wakeLock.request('screen');

@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 70%;
+  width: 90%;
   margin-top: 15px;
 }
 
@@ -19,8 +19,16 @@
   display: flex;
 }
 
+.transitionPart {
+  width: 60%;
+}
+
 @media screen and (max-width: 640px) {
   .addPart {
+    width: 100%;
+  }
+
+  .transitionPart {
     width: 100%;
   }
 }

@@ -5,20 +5,19 @@ import { Wrapper } from 'components/Wrapper';
 import { useGameSessionInfo } from 'Provider/GameSessionContex';
 import { GameSessionInfo } from 'domain/GameSessionType';
 import QRicon from 'src/images/QR-icon.svg';
-import { useScreenWakeLock } from 'helpers/useScreenWakeLock';
+import { useScreenWakeLock } from 'utils/useScreenWakeLock';
 import { ModalQRCode } from 'components/ModalQRCode';
 import { CurrentPlayer } from './CurrentPlayer';
 import { OtherPlayers } from './OtherPlayers/OtherPlayers';
 import * as styles from './game.module.css';
 
 export const Game = (): JSX.Element => {
-  const [currPlayerIndex, setCurrPlayerIndex] = useState(0);
   const [gameSessionState, setGameSessionState] = useGameSessionInfo();
+  console.log(gameSessionState);
   const [currGameSessionState, setCurrGameSessionState] = useState(gameSessionState.players);
-  // console.log(gameSessionState);
   const [generation, setGeneration] = useState(gameSessionState.generation);
-
   const [isActiveTimer, setIsActiveTimer] = useState(gameSessionState.isActive);
+  const [currPlayerIndex, setCurrPlayerIndex] = useState(gameSessionState.currPlayer);
 
   const getDeltaTime = () => Math.floor((Date.now() - gameSessionState.startTime) / 1000);
   const getNewTime = (prevTime: number) => prevTime - getDeltaTime();
@@ -26,6 +25,7 @@ export const Game = (): JSX.Element => {
   const onPlay = (updatedGameSession: Array<GameSessionInfo>) => {
     setGameSessionState({
       players: updatedGameSession,
+      currPlayer: currPlayerIndex,
       generation,
       startTime: Date.now(),
       isActive: true,
@@ -34,8 +34,10 @@ export const Game = (): JSX.Element => {
   };
 
   const onPause = (updatedGameSession: Array<GameSessionInfo>) => {
+    console.log(updatedGameSession);
     setGameSessionState({
       players: [...updatedGameSession],
+      currPlayer: currPlayerIndex,
       generation,
       startTime: 0,
       isActive: false,
@@ -97,6 +99,36 @@ export const Game = (): JSX.Element => {
     );
   };
 
+  const isFinishedGame = () =>
+    currGameSessionState.filter((player) => player.timeToLeft === 0).length ===
+    currGameSessionState.length;
+
+  const isAllPassed = () =>
+    currGameSessionState.filter((player) => player.hasPassed).length ===
+    currGameSessionState.length;
+
+  useEffect(() => {
+    const onUpdateState = () => {
+      if (isActiveTimer) {
+        const updatedSession = currGameSessionState.map((el, index) => {
+          if (index === currPlayerIndex) {
+            return {
+              ...el,
+              timeToLeft: getNewTime(el.timeToLeft),
+            };
+          }
+          return el;
+        });
+        onPlay(updatedSession);
+      }
+    };
+    const timeout = setTimeout(onUpdateState, 5000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [currGameSessionState, isActiveTimer]);
+
   return (
     <Wrapper>
       <div className={styles.otherPlayers}>
@@ -108,7 +140,7 @@ export const Game = (): JSX.Element => {
           />
         ))}
       </div>
-      <Typography variant="h6" gutterBottom color="primary">
+      <Typography variant="h6" gutterBottom color="primary" component="div">
         <Box lineHeight={2} fontWeight="fontWeightBold">
           Generation: {generation}
         </Box>
@@ -153,37 +185,64 @@ export const Game = (): JSX.Element => {
         />
       ) : (
         <div className={styles.nextGenField}>
-          <Button
-            className={styles.btnNextGen}
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={() => {
-              const updatedSessionNextGen = movePlayersNextGen(
-                currGameSessionState,
-              ).map((player) => ({ ...player, hasPassed: false }));
+          {isFinishedGame() ? (
+            <Box
+              className={styles.btnNextGen}
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+            >
+              <Typography variant="h6" gutterBottom color="primary" component="div">
+                <Box lineHeight={2} fontWeight="fontWeightBold">
+                  Time is over for All players
+                </Box>
+              </Typography>
+              <Typography variant="h6" gutterBottom color="primary" component="div">
+                <Box lineHeight={2} fontWeight="fontWeightBold">
+                  Finish game
+                </Box>
+              </Typography>
+            </Box>
+          ) : (
+            <Button
+              className={styles.btnNextGen}
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={() => {
+                const updatedSessionNextGen = movePlayersNextGen(currGameSessionState).map(
+                  (player) => {
+                    if (player.timeToLeft === 0) {
+                      return { ...player };
+                    }
+                    return { ...player, hasPassed: false };
+                  },
+                );
 
-              setIsActiveTimer(false);
-              setGeneration(generation + 1);
-              setCurrGameSessionState(updatedSessionNextGen);
-              setGameSessionState({
-                players: updatedSessionNextGen,
-                generation: generation + 1,
-                startTime: 0,
-                isActive: false,
-              });
+                setIsActiveTimer(false);
+                setGeneration(generation + 1);
+                setCurrGameSessionState(updatedSessionNextGen);
+                setGameSessionState({
+                  players: updatedSessionNextGen,
+                  currPlayer: 0,
+                  generation: generation + 1,
+                  startTime: 0,
+                  isActive: false,
+                });
 
-              setCurrPlayerIndex(0);
-            }}
-          >
-            next Generation
-          </Button>
+                setCurrPlayerIndex(0);
+              }}
+            >
+              next Generation
+            </Button>
+          )}
         </div>
       )}
 
       <div className={styles.btnsBottom}>
         {isActiveTimer ? (
           <Button
+            disabled={isFinishedGame() || isAllPassed()}
             className={styles.btnPlay}
             variant="contained"
             color="primary"
@@ -196,6 +255,7 @@ export const Game = (): JSX.Element => {
           </Button>
         ) : (
           <Button
+            disabled={isFinishedGame() || isAllPassed()}
             className={styles.btnPlay}
             variant="contained"
             color="primary"
@@ -209,6 +269,7 @@ export const Game = (): JSX.Element => {
         )}
 
         <Button
+          disabled={isFinishedGame() || isAllPassed()}
           className={styles.btnPass}
           variant="contained"
           color="secondary"
@@ -226,21 +287,18 @@ export const Game = (): JSX.Element => {
                 return el;
               });
               onPlay(updatedSession);
-            }
 
-            if (gameSessionState.startTime === 0) {
-              onPlay(currGameSessionState);
+              setCurrPlayerIndex(
+                currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
+              );
+              setIsActiveTimer(true);
             }
-
-            setCurrPlayerIndex(
-              currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
-            );
           }}
         >
           pass
         </Button>
 
-        <Link to="/color" className={styles.btnFinish}>
+        <Link to="/finished-game" className={styles.btnFinish}>
           <Button variant="contained" color="secondary" size="large">
             <Box lineHeight={2} fontWeight="fontWeightBold">
               Finish game
@@ -248,6 +306,7 @@ export const Game = (): JSX.Element => {
           </Button>
         </Link>
         <Button
+          disabled={isFinishedGame() || isAllPassed()}
           onClick={() => setIsOpenModalQR(true)}
           className={styles.btnQR}
           variant="contained"

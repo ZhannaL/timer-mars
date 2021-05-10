@@ -4,6 +4,7 @@ import { GameSessionType } from 'domain/GameSessionType';
 const GameSessionContex = createContext<[GameSessionType, (newState: GameSessionType) => void]>([
   {
     players: [],
+    currPlayer: 0,
     generation: 1,
     startTime: 0,
     isActive: true,
@@ -22,6 +23,7 @@ export const GameSessionProvider = ({ children }: Props): JSX.Element => {
     ? JSON.parse(params)
     : {
         players: [],
+        currPlayer: 0,
         generation: 1,
         startTime: 0,
         isActive: true,

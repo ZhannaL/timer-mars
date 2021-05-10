@@ -1,0 +1,1 @@
+export { FinishedGamePage } from './FinishedGamePage';

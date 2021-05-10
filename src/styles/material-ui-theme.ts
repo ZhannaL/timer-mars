@@ -34,4 +34,5 @@ export const theme: Theme = createMuiTheme({
       A700: '#616161',
     },
   },
+  spacing: [0, 4, 8, 12, 20, 32, 52, 84],
 });

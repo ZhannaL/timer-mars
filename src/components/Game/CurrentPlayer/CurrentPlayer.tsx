@@ -60,7 +60,7 @@ export const CurrentPlayer = ({
         }}
       >
         <div className={styles.currentItem}>
-          <Typography variant="h5" className={styles.name}>
+          <Typography variant="h5" className={styles.name} component="div">
             <Box lineHeight={2} fontWeight="fontWeightBold">
               {currentPlayer.name}
             </Box>

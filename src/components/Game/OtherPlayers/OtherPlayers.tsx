@@ -15,7 +15,10 @@ export const OtherPlayers = ({ user, length }: Props): JSX.Element => {
 
   return (
     <div
-      className={classnames(styles.item, user.hasPassed ? styles.passed : '')}
+      className={classnames(
+        styles.item,
+        user.hasPassed || user.timeToLeft === 0 ? styles.passed : '',
+      )}
       style={{ width: `${100 / length}%` }}
     >
       <svg width="50" height="50">

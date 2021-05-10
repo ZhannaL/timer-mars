@@ -9,6 +9,7 @@ export type GameSessionInfo = {
 
 export type GameSessionType = {
   players: Array<GameSessionInfo>;
+  currPlayer: number;
   generation: number;
   startTime: number;
   isActive: boolean;

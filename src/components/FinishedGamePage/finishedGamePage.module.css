@@ -1,0 +1,8 @@
+.finishGameBtn {
+  width: 100%;
+}
+
+.name {
+  text-transform: capitalize;
+  width: 40%;
+}

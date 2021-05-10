@@ -18,7 +18,7 @@ export const TimeProvider = ({ children }: Props): JSX.Element => {
 
   const setState = (newState: number): void => {
     setTimeState(newState);
-    localStorage.setItem('gameSession', JSON.stringify(newState));
+    localStorage.setItem('gameTime', JSON.stringify(newState));
   };
 
   const value: [number, (newState: number) => void] = useMemo(() => [timeState, setState], [
