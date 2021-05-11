@@ -18,18 +18,20 @@ type Props = {
 };
 
 export const GameSessionProvider = ({ children }: Props): JSX.Element => {
-  const params = localStorage.getItem('gameSession');
-  const defaultParams = params
-    ? JSON.parse(params)
-    : {
-        players: [],
-        currPlayer: 0,
-        generation: 1,
-        startTime: 0,
-        isActive: true,
-      };
-
-  const [gameSessionState, setGameSessionState] = useState<GameSessionType>(defaultParams);
+  const [gameSessionState, setGameSessionState] = useState<GameSessionType>(() => {
+    const params = localStorage.getItem('gameSession');
+    const defaultParams = params
+      ? JSON.parse(params)
+      : {
+          players: [],
+          currPlayer: 0,
+          generation: 1,
+          startTime: 0,
+          isActive: true,
+        };
+    defaultParams.startTime = Date.now();
+    return defaultParams;
+  });
 
   const setState = (newState: GameSessionType): void => {
     setGameSessionState(newState);

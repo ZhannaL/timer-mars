@@ -21,7 +21,9 @@ export const parseQuery = (urlParams: PageProps): void => {
 
     const allFriendsParam = params.get('af');
     const allFriend = allFriendsParam
-      ? allFriendsParam.split(',').map((friend) => ({ id: short.generate(), name: friend }))
+      ? allFriendsParam
+          .split(',')
+          .map((friend) => ({ id: short.generate(), name: friend.replace('%20', ' ') }))
       : [];
     // console.log(allFriend);
     setFriendsState(allFriend);
@@ -32,7 +34,9 @@ export const parseQuery = (urlParams: PageProps): void => {
     const colors = colorsParam ? colorsParam.split(',').map((color) => Number(color)) : [];
 
     const playersParam = params.get('p');
-    const players = playersParam ? playersParam.split(',') : [];
+    const players = playersParam
+      ? playersParam.split(',').map((player) => player.replace('%20', ' '))
+      : [];
     // console.log(colorsParam);
 
     const gameState = colorToPick.map((color) => ({

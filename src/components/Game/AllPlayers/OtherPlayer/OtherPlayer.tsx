@@ -2,22 +2,26 @@ import classnames from 'classnames';
 import { Box, Typography } from '@material-ui/core';
 import { colorToPick } from 'styles/colorsToPick';
 import { GameSessionInfo } from 'domain/GameSessionType';
-import { formatTime } from '../Countdown/formatTime';
-import * as styles from './otherPlayers.module.css';
+import { formatTime } from '../../Countdown/formatTime';
+import * as styles from './otherPlayer.module.css';
 
 type Props = {
   user: GameSessionInfo;
   length: number;
+  animationState: 'fadeIn' | 'none' | 'fadeOut';
+  isAnimated: boolean;
 };
 
-export const OtherPlayers = ({ user, length }: Props): JSX.Element => {
+export const OtherPlayer = ({ user, length, animationState, isAnimated }: Props): JSX.Element => {
   const hexColor = colorToPick.find((el) => el.name === user.color)?.hex;
 
   return (
     <div
       className={classnames(
         styles.item,
-        user.hasPassed || user.timeToLeft === 0 ? styles.passed : '',
+        !isAnimated && (user.hasPassed || user.timeToLeft === 0) ? styles.passed : '',
+        animationState === 'fadeIn' && styles.fadeIn,
+        animationState === 'fadeOut' && styles.fadeOut,
       )}
       style={{ width: `${100 / length}%` }}
     >

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { navigate } from 'gatsby';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useEffect, useState } from 'react';
@@ -14,8 +15,10 @@ import { AddFriendItem } from './AddFriendItem';
 
 import * as styles from './addFriends.module.css';
 
-const isNameDuplicated = (array: Array<FriendType>, name: string) =>
+export const isNameDuplicated = (array: Array<FriendType>, name: string): boolean =>
   !!array.find((element) => element.name === name);
+
+export const isNameHasComma = (name: string): boolean => name.includes(',');
 
 export const AddFriends = (): JSX.Element => {
   const [friendsState, setFriendsState] = useFriends();
@@ -53,6 +56,7 @@ export const AddFriends = (): JSX.Element => {
                     index={index}
                     key={friend.id}
                     friendName={friend.name}
+                    allFriend={friendsArr}
                     onChange={(newName) => {
                       friendsArr[index].name = newName;
                       setFriendsArr([...friendsArr]);
@@ -82,9 +86,13 @@ export const AddFriends = (): JSX.Element => {
 
             <div className={styles.addPart}>
               <TextField
-                error={isNameDuplicated(friendsArr, nameToAdd)}
+                error={isNameDuplicated(friendsArr, nameToAdd) || isNameHasComma(nameToAdd)}
                 helperText={
-                  isNameDuplicated(friendsArr, nameToAdd) ? 'this name already exist' : ' '
+                  isNameDuplicated(friendsArr, nameToAdd)
+                    ? 'this name already exist'
+                    : isNameHasComma(nameToAdd)
+                    ? 'comma is forbidden'
+                    : ' '
                 }
                 label="new friend"
                 size="small"
@@ -99,7 +107,11 @@ export const AddFriends = (): JSX.Element => {
                 variant="contained"
                 color="primary"
                 onClick={() => {
-                  if (nameToAdd.length !== 0 && !isNameDuplicated(friendsArr, nameToAdd)) {
+                  if (
+                    nameToAdd.length !== 0 &&
+                    !isNameDuplicated(friendsArr, nameToAdd) &&
+                    !isNameHasComma(nameToAdd)
+                  ) {
                     const createdId = short.generate();
                     setFriendsArr(
                       friendsArr.concat({

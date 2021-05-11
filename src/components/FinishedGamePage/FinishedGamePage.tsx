@@ -27,7 +27,7 @@ export const FinishedGamePage = (): JSX.Element => {
   return (
     <Wrapper>
       <Grow in={isSlided}>
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box display="flex" flexDirection="column" alignItems="center" width="100%">
           <Header> Finished Game </Header>
           <Box p={2} display="flex" alignItems="center">
             <Typography variant="h6" color="primary" component="div">
@@ -49,31 +49,41 @@ export const FinishedGamePage = (): JSX.Element => {
             </Typography>
           </Box>
           <Box width="100%">
-            {gameSessionState.players.map((player) => (
-              <Box p={1} display="flex" alignItems="center" justifyContent="center" flexGrow={1}>
-                <svg width="50" height="50">
-                  <rect
-                    x="5"
-                    y="5"
-                    rx="5"
-                    ry="5"
-                    width="40"
-                    height="40"
-                    fill={colorToPick.find((el) => el.name === player.color)?.hex}
-                  />
-                </svg>
-                <Typography variant="h6" color="primary" component="div" className={styles.name}>
-                  <Box lineHeight={1} fontWeight="fontWeightBold" mx={3}>
-                    {player.name} :
-                  </Box>
-                </Typography>
-                <Typography variant="h6" component="div">
-                  <Box lineHeight={1} fontWeight="fontWeightBold">
-                    &nbsp; {formatTime(player.timeToLeft)}
-                  </Box>
-                </Typography>
-              </Box>
-            ))}
+            {[...gameSessionState.players]
+              .sort((a, b) => b.timeToLeft - a.timeToLeft)
+              .map((player) => (
+                <Box
+                  key={player.name}
+                  p={1}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  width="100%"
+                  flexGrow={1}
+                >
+                  <svg width="50" height="50">
+                    <rect
+                      x="5"
+                      y="5"
+                      rx="5"
+                      ry="5"
+                      width="40"
+                      height="40"
+                      fill={colorToPick.find((el) => el.name === player.color)?.hex}
+                    />
+                  </svg>
+                  <Typography variant="h6" color="primary" component="div" className={styles.name}>
+                    <Box lineHeight={1} fontWeight="fontWeightBold" mx={3}>
+                      {player.name} :
+                    </Box>
+                  </Typography>
+                  <Typography variant="h6" component="div">
+                    <Box lineHeight={1} fontWeight="fontWeightBold">
+                      &nbsp; {formatTime(player.timeToLeft)}
+                    </Box>
+                  </Typography>
+                </Box>
+              ))}
           </Box>
           <Box py={4} width="100%" display="flex">
             <Button

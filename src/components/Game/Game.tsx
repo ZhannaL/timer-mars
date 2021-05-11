@@ -8,8 +8,8 @@ import QRicon from 'src/images/QR-icon.svg';
 import { useScreenWakeLock } from 'utils/useScreenWakeLock';
 import { ModalQRCode } from 'components/ModalQRCode';
 import { CurrentPlayer } from './CurrentPlayer';
-import { OtherPlayers } from './OtherPlayers/OtherPlayers';
 import * as styles from './game.module.css';
+import { AllPlayers } from './AllPlayers';
 
 export const Game = (): JSX.Element => {
   const [gameSessionState, setGameSessionState] = useGameSessionInfo();
@@ -74,6 +74,9 @@ export const Game = (): JSX.Element => {
   };
 
   const onNextPlayer = () => {
+    setCurrPlayerIndex(
+      currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
+    );
     setIsActiveTimer(true);
     if (gameSessionState.startTime !== 0) {
       const updatedSession = currGameSessionState.map((el, index) => {
@@ -85,16 +88,29 @@ export const Game = (): JSX.Element => {
         }
         return el;
       });
-      onPlay(updatedSession);
+
+      setGameSessionState({
+        players: updatedSession,
+        currPlayer:
+          currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
+        generation,
+        startTime: Date.now(),
+        isActive: true,
+      });
+      setCurrGameSessionState(updatedSession);
     }
 
     if (gameSessionState.startTime === 0) {
-      onPlay(currGameSessionState);
+      setGameSessionState({
+        players: currGameSessionState,
+        currPlayer:
+          currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
+        generation,
+        startTime: Date.now(),
+        isActive: true,
+      });
+      setCurrGameSessionState(currGameSessionState);
     }
-
-    setCurrPlayerIndex(
-      currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
-    );
   };
 
   const isFinishedGame = () =>
@@ -106,18 +122,35 @@ export const Game = (): JSX.Element => {
     currGameSessionState.length;
 
   useEffect(() => {
+    setGameSessionState({
+      players: currGameSessionState,
+      currPlayer: currPlayerIndex,
+      generation,
+      startTime: gameSessionState.startTime,
+      isActive: true,
+    });
+    setCurrGameSessionState(currGameSessionState);
+
     const onUpdateState = () => {
       if (isActiveTimer && !isAllPassed()) {
+        const dateNow = Date.now();
         const updatedSession = currGameSessionState.map((el, index) => {
           if (index === currPlayerIndex) {
             return {
               ...el,
-              timeToLeft: getNewTime(el.timeToLeft),
+              timeToLeft: el.timeToLeft - Math.floor((dateNow - gameSessionState.startTime) / 1000),
             };
           }
           return el;
         });
-        onPlay(updatedSession);
+        setGameSessionState({
+          players: updatedSession,
+          currPlayer: currPlayerIndex,
+          generation,
+          startTime: dateNow,
+          isActive: true,
+        });
+        setCurrGameSessionState(updatedSession);
       }
     };
     const timeout = setTimeout(onUpdateState, 5000);
@@ -129,15 +162,8 @@ export const Game = (): JSX.Element => {
 
   return (
     <Wrapper>
-      <div className={styles.otherPlayers}>
-        {currGameSessionState.map((otherUser) => (
-          <OtherPlayers
-            key={otherUser.color}
-            user={otherUser}
-            length={currGameSessionState.length}
-          />
-        ))}
-      </div>
+      <AllPlayers currGameSessionState={currGameSessionState} generation={generation} />
+
       <Typography variant="h6" gutterBottom color="primary" component="div">
         <Box lineHeight={2} fontWeight="fontWeightBold">
           Generation: {generation}

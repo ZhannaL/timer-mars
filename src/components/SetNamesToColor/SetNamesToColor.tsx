@@ -8,12 +8,14 @@ import { Header } from 'components/Header';
 import { Box, Button, Grow } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useGameSessionInfo } from 'Provider/GameSessionContex';
+import { useFriends } from 'Provider/FriendsContex';
 import { SetNamesToColorItem } from './SetNamesToColorItem';
 import { SetTime } from './SetTime';
 import * as styles from './setNamesToColor.module.css';
 
 export const SetNamesToColor = (): JSX.Element => {
   const [gameState, setGameState] = useGameInfo();
+  const [friendsState] = useFriends();
   const [, setGameSessionState] = useGameSessionInfo();
 
   const [characters, updateCharacters] = useState(gameState);
@@ -28,6 +30,21 @@ export const SetNamesToColor = (): JSX.Element => {
     updateCharacters(items);
     setGameState(items);
   };
+
+  useEffect(() => {
+    const updatedGameState = characters.map((character) => {
+      if (friendsState.find((friend) => friend.name === character.name)) {
+        return character;
+      }
+      return {
+        ...character,
+        name: 'NoOne',
+      };
+    });
+
+    updateCharacters(updatedGameState);
+    setGameState(updatedGameState);
+  }, []);
 
   const [isSlided, setIsSlided] = useState(false);
   useEffect(() => {

@@ -7,6 +7,7 @@ import { colorToPick } from 'styles/colorsToPick';
 import { useFriends } from 'Provider/FriendsContex';
 import { GameInfo } from 'domain/GameType';
 import { DraggableProvided } from 'react-beautiful-dnd';
+import { useGameInfo } from 'Provider/GameContex';
 import * as styles from './setNamesToColorItem.module.css';
 
 type Props = {
@@ -18,6 +19,7 @@ type Props = {
 
 export const SetNamesToColorItem = ({ nameAndColor, onChange, provided }: Props): JSX.Element => {
   const [friendsState] = useFriends();
+  const [gameState] = useGameInfo();
 
   const [person, setPerson] = useState(nameAndColor.name);
   const handleChangeColor = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -26,6 +28,7 @@ export const SetNamesToColorItem = ({ nameAndColor, onChange, provided }: Props)
   };
 
   const hexColor = colorToPick.find((el) => el.name === nameAndColor.color)?.hex;
+
   return (
     <div
       className={styles.item}
@@ -39,7 +42,11 @@ export const SetNamesToColorItem = ({ nameAndColor, onChange, provided }: Props)
 
       <Select
         value={person}
-        onChange={handleChangeColor}
+        onChange={(event) => {
+          if (!gameState.find((el) => el.name === event.target.value && el.name !== 'NoOne')) {
+            handleChangeColor(event);
+          }
+        }}
         className={classnames(styles.select, person === 'NoOne' ? styles.noneSelecItem : '')}
       >
         <MenuItem value="NoOne" className={styles.noneSelecItem}>

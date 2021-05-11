@@ -72,7 +72,7 @@ export const CurrentPlayer = ({
             </Box>
           </Typography>
 
-          <Typography component="div" variant="h6">
+          <Typography component="div" variant="h5">
             <Box lineHeight={2} fontWeight="fontWeightBold" className={styles.nextText}>
               Next Player <ArrowRightAltIcon fontSize="large" />
             </Box>
