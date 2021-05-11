@@ -351,7 +351,7 @@ export const Game = (): JSX.Element => {
           <QRicon />
         </Button>
       </div>
-      <ModalQRCode isOpen={isOpenModalQR} onClose={() => setIsOpenModalQR(false)} />
+      {isOpenModalQR && <ModalQRCode onClose={() => setIsOpenModalQR(false)} />}
     </Wrapper>
   );
 };

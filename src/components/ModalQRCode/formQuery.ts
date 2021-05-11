@@ -6,7 +6,6 @@ export const getQueryString = (
   friendsState: Array<FriendType>,
   timeState: number,
 ): string => {
-  const webPage = 'https://timer-mars.netlify.app/shared-game';
   const { generation } = gameSession;
   const color = gameSession.players.map((el) => el.color).join(',');
   const players = gameSession.players.map((el) => el.name.replace(' ', '%20')).join(',');
@@ -15,5 +14,5 @@ export const getQueryString = (
   const allFriends = friendsState.map((el) => el.name.replace(' ', '%20'));
   const { currPlayer } = gameSession;
 
-  return `${webPage}?g=${generation}&c=${color}&p=${players}&ttl=${timeToLeft}&hp=${hasPassed}&af=${allFriends}&t=${timeState}&cp=${currPlayer}`;
+  return `g=${generation}&c=${color}&p=${players}&ttl=${timeToLeft}&hp=${hasPassed}&af=${allFriends}&t=${timeState}&cp=${currPlayer}`;
 };

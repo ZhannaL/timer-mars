@@ -1,4 +1,5 @@
 import QRCode from 'qrcode.react';
+import { Base64 } from 'js-base64';
 import { Box, Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@material-ui/core';
 import { useGameSessionInfo } from 'Provider/GameSessionContex';
 import { useFriends } from 'Provider/FriendsContex';
@@ -10,19 +11,21 @@ import { getQueryString } from './formQuery';
 import * as styles from './modalQRCode.module.css';
 
 type Props = {
-  isOpen: boolean;
   onClose: (value: string) => void;
 };
 
-export const ModalQRCode = ({ isOpen, onClose }: Props): JSX.Element => {
+export const ModalQRCode = ({ onClose }: Props): JSX.Element => {
   const [friendsState] = useFriends();
   const [timeState] = useTimeInfo();
   const [gameSessionState] = useGameSessionInfo();
   const ref = useRef<HTMLDivElement>(null);
+  const webPage = 'https://timer-mars.netlify.app/shared-game';
 
-  const linkToShare = getQueryString(gameSessionState, friendsState, timeState);
+  const linkToShare = `${webPage}?gd=${Base64.encodeURI(
+    getQueryString(gameSessionState, friendsState, timeState),
+  )}`;
   return (
-    <Dialog onClose={onClose} open={isOpen} fullWidth>
+    <Dialog onClose={onClose} open fullWidth>
       <DialogTitle>
         <Typography align="center" variant="h4" color="primary">
           Share this game

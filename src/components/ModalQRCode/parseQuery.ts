@@ -4,18 +4,19 @@ import { useFriends } from 'Provider/FriendsContex';
 import { useGameSessionInfo } from 'Provider/GameSessionContex';
 import { useTimeInfo } from 'Provider/TimeContex';
 import { colorToPick } from 'styles/colorsToPick';
-
+import { Base64 } from 'js-base64';
 import { useGameInfo } from 'Provider/GameContex';
-import { PageProps } from 'gatsby';
 
-export const parseQuery = (urlParams: PageProps): void => {
+export const parseQuery = (stringParams: string): void => {
   const [, setFriendsState] = useFriends();
   const [, setGameState] = useGameInfo();
   const [, setTimeState] = useTimeInfo();
   const [, setGameSessionState] = useGameSessionInfo();
 
   useEffect(() => {
-    const params = new URLSearchParams(urlParams.location.search);
+    const decodedParams = Base64.fromBase64(stringParams);
+
+    const params = new URLSearchParams(decodedParams);
 
     setTimeState(Number(params.get('t')) || 2700);
 
@@ -25,7 +26,6 @@ export const parseQuery = (urlParams: PageProps): void => {
           .split(',')
           .map((friend) => ({ id: short.generate(), name: friend.replace('%20', ' ') }))
       : [];
-    // console.log(allFriend);
     setFriendsState(allFriend);
 
     const generation = Number(params.get('g') || 0);
@@ -37,7 +37,6 @@ export const parseQuery = (urlParams: PageProps): void => {
     const players = playersParam
       ? playersParam.split(',').map((player) => player.replace('%20', ' '))
       : [];
-    // console.log(colorsParam);
 
     const gameState = colorToPick.map((color) => ({
       color: color.name,
@@ -50,14 +49,11 @@ export const parseQuery = (urlParams: PageProps): void => {
     const timeToLeft = timeToLeftParams
       ? timeToLeftParams.split(',').map((time) => Number(time))
       : [];
-    // console.log(timeToLeft);
 
     const hasPassedParams = params.get('hp');
     const hasPassed = hasPassedParams
       ? hasPassedParams.split(',').map((hp) => Boolean(Number(hp)))
       : [];
-
-    // console.log(hasPassed);
 
     const playersObj = colors.map((color, index) => ({
       color,
@@ -66,7 +62,6 @@ export const parseQuery = (urlParams: PageProps): void => {
       hasPassed: hasPassed[index],
     }));
 
-    // const dateNow = Date.now();
     setGameSessionState({
       players: playersObj,
       currPlayer,
@@ -74,5 +69,5 @@ export const parseQuery = (urlParams: PageProps): void => {
       startTime: Date.now(),
       isActive: true,
     });
-  }, [urlParams]);
+  }, [stringParams]);
 };
