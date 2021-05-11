@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField, IconButton, makeStyles } from '@material-ui/core';
+import { TextField, IconButton, makeStyles, Box } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { FriendType } from 'domain/FriendType';
 import * as styles from './addFriendItem.module.css';
@@ -32,7 +32,7 @@ export const AddFriendItem = ({
   const [error, setError] = useState(false);
 
   return (
-    <div className={styles.item}>
+    <Box display="flex" alignItems="self-end" py={1} mx="auto" className={styles.item}>
       <TextField
         error={error}
         helperText={error ? 'this name already exist' : ' '}
@@ -55,6 +55,6 @@ export const AddFriendItem = ({
       <IconButton className={classes.button} size="small" onClick={() => onDelete()}>
         <CloseIcon />
       </IconButton>
-    </div>
+    </Box>
   );
 };

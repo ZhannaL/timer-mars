@@ -50,35 +50,39 @@ export const CurrentPlayer = ({
   const classes = useStyles({ colorHex: hexColor ?? '#a5a5a6' });
 
   return (
-    <>
-      <Button
-        className={classes.btn}
-        variant="contained"
-        color="inherit"
-        onClick={() => {
-          onNextPlayer();
-        }}
-      >
-        <div className={styles.currentItem}>
-          <Typography variant="h5" className={styles.name} component="div">
-            <Box lineHeight={2} fontWeight="fontWeightBold">
-              {currentPlayer.name}
-            </Box>
-          </Typography>
+    <Button
+      className={classes.btn}
+      variant="contained"
+      color="inherit"
+      onClick={() => {
+        onNextPlayer();
+      }}
+    >
+      <Box display="flex" flexDirection="column" alignItems="center" width="100%">
+        <Typography variant="h5" className={styles.name} component="div">
+          <Box lineHeight={2} fontWeight="fontWeightBold">
+            {currentPlayer.name}
+          </Box>
+        </Typography>
 
-          <Typography component="div" variant="h6" className={styles.name}>
-            <Box lineHeight={2} fontWeight="fontWeightBold">
-              {formatTime(time)}
-            </Box>
-          </Typography>
+        <Typography component="div" variant="h6" className={styles.name}>
+          <Box lineHeight={2} fontWeight="fontWeightBold">
+            {formatTime(time)}
+          </Box>
+        </Typography>
 
-          <Typography component="div" variant="h5">
-            <Box lineHeight={2} fontWeight="fontWeightBold" className={styles.nextText}>
-              Next Player <ArrowRightAltIcon fontSize="large" />
-            </Box>
-          </Typography>
-        </div>
-      </Button>
-    </>
+        <Typography component="div" variant="h5">
+          <Box
+            lineHeight={2}
+            fontWeight="fontWeightBold"
+            display="flex"
+            alignItems="center"
+            marginTop="60px"
+          >
+            Next Player <ArrowRightAltIcon fontSize="large" />
+          </Box>
+        </Typography>
+      </Box>
+    </Button>
   );
 };

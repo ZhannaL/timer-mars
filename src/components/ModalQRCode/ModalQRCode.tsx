@@ -45,7 +45,7 @@ export const ModalQRCode = ({ isOpen, onClose }: Props): JSX.Element => {
             or copy link
           </Box>
         </Typography>
-        <div className={styles.linkPart}>
+        <Box display="flex" alignItems="center" px={3} py={1}>
           <Typography variant="body1" className={styles.link}>
             {linkToShare}
           </Typography>
@@ -57,7 +57,7 @@ export const ModalQRCode = ({ isOpen, onClose }: Props): JSX.Element => {
           >
             <FileCopyOutlinedIcon />
           </IconButton>
-        </div>
+        </Box>
       </DialogContent>
     </Dialog>
   );

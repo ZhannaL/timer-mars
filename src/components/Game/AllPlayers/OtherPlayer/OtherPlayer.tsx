@@ -16,9 +16,11 @@ export const OtherPlayer = ({ user, length, animationState, isAnimated }: Props)
   const hexColor = colorToPick.find((el) => el.name === user.color)?.hex;
 
   return (
-    <div
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
       className={classnames(
-        styles.item,
         !isAnimated && (user.hasPassed || user.timeToLeft === 0) ? styles.passed : '',
         animationState === 'fadeIn' && styles.fadeIn,
         animationState === 'fadeOut' && styles.fadeOut,
@@ -36,6 +38,6 @@ export const OtherPlayer = ({ user, length, animationState, isAnimated }: Props)
           {formatTime(user.timeToLeft)}
         </Box>
       </Typography>
-    </div>
+    </Box>
   );
 };

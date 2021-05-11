@@ -3,7 +3,7 @@ import { navigate } from 'gatsby';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useEffect, useState } from 'react';
 import short from 'short-uuid';
-import { Button, Collapse, Grow, TextField } from '@material-ui/core';
+import { Box, Button, Collapse, Grow, TextField } from '@material-ui/core';
 import { FriendType } from 'domain/FriendType';
 import { useFriends } from 'Provider/FriendsContex';
 import { Wrapper } from 'components/Wrapper';
@@ -84,7 +84,13 @@ export const AddFriends = (): JSX.Element => {
               ))}
             </TransitionGroup>
 
-            <div className={styles.addPart}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              marginTop={4}
+              className={styles.addPart}
+            >
               <TextField
                 error={isNameDuplicated(friendsArr, nameToAdd) || isNameHasComma(nameToAdd)}
                 helperText={
@@ -132,8 +138,8 @@ export const AddFriends = (): JSX.Element => {
               >
                 add
               </Button>
-            </div>
-            <div className={styles.btnBottom}>
+            </Box>
+            <Box display="flex" width="100%">
               <Button
                 variant="contained"
                 color="secondary"
@@ -145,7 +151,7 @@ export const AddFriends = (): JSX.Element => {
               >
                 Set colors
               </Button>
-            </div>
+            </Box>
           </div>
         </Grow>
       </Wrapper>

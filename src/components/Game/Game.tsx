@@ -208,7 +208,7 @@ export const Game = (): JSX.Element => {
           }}
         />
       ) : (
-        <div className={styles.nextGenField}>
+        <Box display="flex" flexDirection="column" alignItems="center" width="100%" height="40vh">
           {isFinishedGame() ? (
             <Box
               className={styles.btnNextGen}
@@ -260,7 +260,7 @@ export const Game = (): JSX.Element => {
               next Generation
             </Button>
           )}
-        </div>
+        </Box>
       )}
 
       <div className={styles.btnsBottom}>

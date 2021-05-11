@@ -5,3 +5,17 @@
 
   width: 100%;
 }
+
+.scroll {
+  animation: scrollAnimation 0.5s ease-in forwards;
+}
+
+@keyframes scrollAnimation {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(var(--element-width));
+  }
+}

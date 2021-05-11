@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { GameSessionInfo } from 'domain/GameSessionType';
 import { useEffect, useState } from 'react';
 import * as styles from './allPlayers.module.css';
@@ -11,16 +12,21 @@ type Props = {
 export const AllPlayers = ({ currGameSessionState, generation }: Props): JSX.Element => {
   const [players, setPlayers] = useState<Array<GameSessionInfo>>([]);
   const [prevGeneration, setPrevGeneration] = useState(1);
-  const [animationState, setAnimationState] = useState<'fadeIn' | 'none' | 'fadeOut'>('none');
+  const [animationState, setAnimationState] = useState<'fadeIn' | 'none' | 'fadeOut' | 'scroll'>(
+    'none',
+  );
 
   useEffect(() => {
     if (generation !== prevGeneration) {
       setAnimationState('fadeIn');
       setTimeout(() => {
-        setPlayers(currGameSessionState);
-        setAnimationState('fadeOut');
+        setAnimationState('scroll');
         setTimeout(() => {
-          setAnimationState('none');
+          setPlayers(currGameSessionState);
+          setAnimationState('fadeOut');
+          setTimeout(() => {
+            setAnimationState('none');
+          }, 500);
         }, 500);
       }, 500);
     } else {
@@ -29,8 +35,15 @@ export const AllPlayers = ({ currGameSessionState, generation }: Props): JSX.Ele
     setPrevGeneration(generation);
   }, [generation, currGameSessionState]);
 
+  const style = {
+    '--element-width': ` -${100 / currGameSessionState.length}%`,
+  } as React.CSSProperties;
+
   return (
-    <div className={styles.otherPlayers}>
+    <div
+      style={style}
+      className={classNames(styles.otherPlayers, animationState === 'scroll' && styles.scroll)}
+    >
       {players.map((otherUser, index) => (
         <OtherPlayer
           key={otherUser.color}
@@ -38,7 +51,7 @@ export const AllPlayers = ({ currGameSessionState, generation }: Props): JSX.Ele
           length={currGameSessionState.length}
           animationState={
             // eslint-disable-next-line no-nested-ternary
-            animationState === 'fadeIn' && index === 0
+            (animationState === 'fadeIn' || animationState === 'scroll') && index === 0
               ? 'fadeIn'
               : animationState === 'fadeOut' && index === players.length - 1
               ? 'fadeOut'

@@ -1,9 +1,4 @@
 .item {
-  display: flex;
-  align-items: self-end;
-
-  padding: 4px 0;
-  margin: 0 auto;
   width: 80%;
 }
 
