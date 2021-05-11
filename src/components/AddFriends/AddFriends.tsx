@@ -18,7 +18,25 @@ import * as styles from './addFriends.module.css';
 export const isNameDuplicated = (array: Array<FriendType>, name: string): boolean =>
   !!array.find((element) => element.name === name);
 
-export const isNameHasComma = (name: string): boolean => name.includes(',');
+export const isNameHasCommaOrAmper = (name: string): boolean =>
+  name.includes(',') || name.includes('&') || name.includes('=');
+
+export type ErrorType = 'symbols' | 'duplicate' | 'none';
+
+export const getErrorMessage = (errorType: ErrorType): string => {
+  switch (errorType) {
+    case 'none':
+      return '';
+    case 'symbols':
+      return ', & = are forbidden';
+    case 'duplicate':
+      return 'this name already exist';
+
+    default:
+      ((_: never) => _)(errorType);
+      throw new Error('unknown user type');
+  }
+};
 
 export const AddFriends = (): JSX.Element => {
   const [friendsState, setFriendsState] = useFriends();
@@ -26,6 +44,8 @@ export const AddFriends = (): JSX.Element => {
 
   const [friendsArr, setFriendsArr] = useState<Array<FriendType>>(friendsState);
   const [nameToAdd, setNameToAdd] = useState<string>('');
+
+  const [errorType, setErrorType] = useState<ErrorType>('none');
 
   const [isSlided, setIsSlided] = useState(false);
   useEffect(() => {
@@ -92,20 +112,21 @@ export const AddFriends = (): JSX.Element => {
               className={styles.addPart}
             >
               <TextField
-                error={isNameDuplicated(friendsArr, nameToAdd) || isNameHasComma(nameToAdd)}
-                helperText={
-                  isNameDuplicated(friendsArr, nameToAdd)
-                    ? 'this name already exist'
-                    : isNameHasComma(nameToAdd)
-                    ? 'comma is forbidden'
-                    : ' '
-                }
+                error={errorType !== 'none'}
+                helperText={errorType !== 'none' ? getErrorMessage(errorType) : ' '}
                 label="new friend"
                 size="small"
                 variant="outlined"
                 value={nameToAdd}
                 onChange={(event) => {
+                  setErrorType('none');
                   setNameToAdd(event.target.value);
+                  if (isNameDuplicated(friendsArr, event.target.value)) {
+                    setErrorType('duplicate');
+                  }
+                  if (isNameHasCommaOrAmper(event.target.value)) {
+                    setErrorType('symbols');
+                  }
                 }}
               />
               <Button
@@ -116,7 +137,7 @@ export const AddFriends = (): JSX.Element => {
                   if (
                     nameToAdd.length !== 0 &&
                     !isNameDuplicated(friendsArr, nameToAdd) &&
-                    !isNameHasComma(nameToAdd)
+                    !isNameHasCommaOrAmper(nameToAdd)
                   ) {
                     const createdId = short.generate();
                     setFriendsArr(

@@ -21,7 +21,9 @@ export const SetNamesToColorItem = ({ nameAndColor, onChange, provided }: Props)
   const [friendsState] = useFriends();
   const [gameState] = useGameInfo();
 
-  const [person, setPerson] = useState(nameAndColor.name);
+  const [choicePlayer, setChoicePlayer] = useState(friendsState);
+
+  const [person, setPerson] = useState<string>(nameAndColor.name);
   const handleChangeColor = (event: React.ChangeEvent<{ value: unknown }>) => {
     setPerson(event.target.value as string);
     onChange(event.target.value as string);
@@ -52,11 +54,17 @@ export const SetNamesToColorItem = ({ nameAndColor, onChange, provided }: Props)
         <MenuItem value="NoOne" className={styles.noneSelecItem}>
           <em>NoOne</em>
         </MenuItem>
-        {friendsState.map((friend) => (
-          <MenuItem key={friend.id} value={friend.name}>
-            {friend.name}
-          </MenuItem>
-        ))}
+        {friendsState
+          .filter(
+            (player) =>
+              !gameState.find((gamePlayer) => gamePlayer.name === player.name) ||
+              player.name === person,
+          )
+          .map((friend) => (
+            <MenuItem key={friend.id} value={friend.name}>
+              {friend.name}
+            </MenuItem>
+          ))}
       </Select>
 
       <DragIndicatorIcon />
