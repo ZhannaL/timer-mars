@@ -11,17 +11,21 @@ import { useGameInfo } from 'Provider/GameContex';
 import * as styles from './setNamesToColorItem.module.css';
 
 type Props = {
+  order: number;
   nameAndColor: GameInfo;
   onChange: (newName: string) => unknown;
 
   provided: DraggableProvided;
 };
 
-export const SetNamesToColorItem = ({ nameAndColor, onChange, provided }: Props): JSX.Element => {
+export const SetNamesToColorItem = ({
+  order,
+  nameAndColor,
+  onChange,
+  provided,
+}: Props): JSX.Element => {
   const [friendsState] = useFriends();
   const [gameState] = useGameInfo();
-
-  const [choicePlayer, setChoicePlayer] = useState(friendsState);
 
   const [person, setPerson] = useState<string>(nameAndColor.name);
   const handleChangeColor = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -40,6 +44,9 @@ export const SetNamesToColorItem = ({ nameAndColor, onChange, provided }: Props)
     >
       <svg width="50" height="50">
         <rect x="5" y="5" rx="5" ry="5" width="40" height="40" fill={hexColor} />
+        <text x="19" y="30" fontFamily="monospace" fontWeight="bold" fontSize="18" fill="white">
+          {order}
+        </text>
       </svg>
 
       <Select

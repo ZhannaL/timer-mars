@@ -164,7 +164,7 @@ export const Game = (): JSX.Element => {
     <Wrapper>
       <AllPlayers currGameSessionState={currGameSessionState} generation={generation} />
 
-      <Typography variant="h6" gutterBottom color="primary" component="div">
+      <Typography variant="h6" color="primary" component="div">
         <Box lineHeight={2} fontWeight="fontWeightBold">
           Generation: {generation}
         </Box>

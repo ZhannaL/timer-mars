@@ -1,3 +1,4 @@
+import { Box } from '@material-ui/core';
 import { ReactNode } from 'react';
 import * as styles from './wrapper.module.css';
 
@@ -6,5 +7,15 @@ type Props = {
 };
 
 export const Wrapper = ({ children }: Props): JSX.Element => (
-  <div className={styles.wrapper}>{children}</div>
+  <Box
+    className={styles.wrapper}
+    display="flex"
+    flexDirection="column"
+    alignItems="center"
+    py={3}
+    px={2}
+    mx="auto"
+  >
+    {children}
+  </Box>
 );

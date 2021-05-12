@@ -12,6 +12,7 @@ import { useFriends } from 'Provider/FriendsContex';
 import { SetNamesToColorItem } from './SetNamesToColorItem';
 import { SetTime } from './SetTime';
 import * as styles from './setNamesToColor.module.css';
+import { PopoverInfo } from './PopoverInfo';
 
 export const SetNamesToColor = (): JSX.Element => {
   const [gameState, setGameState] = useGameInfo();
@@ -79,7 +80,11 @@ export const SetNamesToColor = (): JSX.Element => {
 
   return (
     <Wrapper>
-      <Header> Set Color </Header>
+      <Header>
+        <Box display="flex" alignItems="center">
+          Set Color <PopoverInfo />
+        </Box>
+      </Header>
       <Grow in={isSlided} mountOnEnter unmountOnExit>
         <div style={{ width: '100%' }}>
           <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -100,6 +105,7 @@ export const SetNamesToColor = (): JSX.Element => {
                         <SetNamesToColorItem
                           provided={providedInner}
                           nameAndColor={element}
+                          order={index + 1}
                           onChange={(newName) => {
                             characters[index].name = newName;
                             updateCharacters([...characters]);
@@ -114,6 +120,7 @@ export const SetNamesToColor = (): JSX.Element => {
               )}
             </Droppable>
           </DragDropContext>
+
           <SetTime
             onChange={(newTime) => {
               const updatedItems = characters.map((el) => ({ ...el, timeToLeft: newTime * 60 }));
