@@ -1,7 +1,32 @@
 .btnNextGen {
-  width: 100%;
   height: 10vh;
-  margin: auto 0;
+}
+
+.btnsBottomNxt {
+  margin-top: auto;
+  display: grid;
+  width: 100%;
+  grid-template-areas: 'btnFinishNxt . btnQRNxt';
+
+  grid-template-rows: 50px;
+  grid-template-columns: 5fr 10px 1fr;
+}
+
+.btnFinishNxt {
+  grid-area: btnFinishNxt;
+}
+
+.btnFinishNxt > * {
+  height: 100%;
+}
+
+.btnQRNxt {
+  grid-area: btnQRNxt;
+}
+
+.btnQRNxt svg {
+  width: 25px;
+  height: 25px;
 }
 
 .btnsBottom {
@@ -9,11 +34,11 @@
   display: grid;
   width: 100%;
   grid-template-areas:
-    'btnPlay btnPlay btnPlay . btnPass btnPass btnPass btnPass'
+    'btnFinish btnFinish btnFinish btnFinish btnFinish btnFinish . btnQR'
     '. . . . . . . . '
-    'btnFinish btnFinish btnFinish btnFinish btnFinish btnFinish . btnQR';
+    'btnPlay btnPlay btnPlay . btnPass btnPass btnPass btnPass';
 
-  grid-template-rows: 2fr 10px 1fr;
+  grid-template-rows: 50px 10px 100px;
   grid-template-columns: 1fr 1fr 1fr 10px 1fr 1fr 10px 1fr;
 }
 
@@ -30,7 +55,7 @@
 }
 
 .btnFinish > * {
-  width: 100%;
+  height: 100%;
 }
 
 .btnQR {

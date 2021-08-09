@@ -10,6 +10,7 @@ import { ModalQRCode } from 'components/ModalQRCode';
 import { CurrentPlayer } from './CurrentPlayer';
 import * as styles from './game.module.css';
 import { AllPlayers } from './AllPlayers';
+import { NextPlayer } from './NextPlayer';
 
 export const Game = (): JSX.Element => {
   const [gameSessionState, setGameSessionState] = useGameSessionInfo();
@@ -169,13 +170,12 @@ export const Game = (): JSX.Element => {
           Generation: {generation}
         </Box>
       </Typography>
-      {currGameSessionState[currPlayerIndex].hasPassed &&
-      currGameSessionState.filter((el) => el.hasPassed).length !== currGameSessionState.length
+      {currGameSessionState[currPlayerIndex].hasPassed && !isAllPassed()
         ? setCurrPlayerIndex(
             currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
           )
         : null}
-      {currGameSessionState.filter((el) => el.hasPassed).length !== currGameSessionState.length ? (
+      {!isAllPassed() ? (
         <CurrentPlayer
           currentPlayer={currGameSessionState[currPlayerIndex]}
           isActiveTimer={isActiveTimer}
@@ -208,7 +208,7 @@ export const Game = (): JSX.Element => {
           }}
         />
       ) : (
-        <Box display="flex" flexDirection="column" alignItems="center" width="100%" height="40vh">
+        <Box display="flex" flexDirection="column" alignItems="center" width="100%" height="100%">
           {isFinishedGame() ? (
             <Box
               className={styles.btnNextGen}
@@ -228,129 +228,170 @@ export const Game = (): JSX.Element => {
               </Typography>
             </Box>
           ) : (
-            <Button
-              className={styles.btnNextGen}
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={() => {
-                const updatedSessionNextGen = movePlayersNextGen(currGameSessionState).map(
-                  (player) => {
-                    if (player.timeToLeft === 0) {
-                      return { ...player };
-                    }
-                    return { ...player, hasPassed: false };
-                  },
-                );
+            <Box display="flex" flexDirection="column" height="100%" width="100%">
+              <Button
+                className={styles.btnNextGen}
+                fullWidth
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => {
+                  const updatedSessionNextGen = movePlayersNextGen(currGameSessionState).map(
+                    (player) => {
+                      if (player.timeToLeft === 0) {
+                        return { ...player };
+                      }
+                      return { ...player, hasPassed: false };
+                    },
+                  );
 
-                setIsActiveTimer(false);
-                setGeneration(generation + 1);
-                setCurrGameSessionState(updatedSessionNextGen);
-                setGameSessionState({
-                  players: updatedSessionNextGen,
-                  currPlayer: 0,
-                  generation: generation + 1,
-                  startTime: 0,
-                  isActive: false,
-                });
+                  setIsActiveTimer(true);
+                  setGeneration(generation + 1);
+                  setCurrGameSessionState(updatedSessionNextGen);
+                  setGameSessionState({
+                    players: updatedSessionNextGen,
+                    currPlayer: 0,
+                    generation: generation + 1,
+                    startTime: Date.now(),
+                    isActive: true,
+                  });
 
-                setCurrPlayerIndex(0);
-              }}
-            >
-              next Generation
-            </Button>
+                  setCurrPlayerIndex(0);
+                }}
+              >
+                start new Generation
+              </Button>
+              <Box my="auto">
+                <NextPlayer
+                  user={
+                    currGameSessionState[
+                      currPlayerIndex === gameSessionState.players.length - 1
+                        ? 0
+                        : currPlayerIndex + 1
+                    ]
+                  }
+                />
+              </Box>
+
+              <Box marginTop="auto" display="flex" className={styles.btnsBottomNxt}>
+                <Link to="/finished-game" className={styles.btnFinishNxt}>
+                  <Button variant="contained" color="secondary" size="large" fullWidth>
+                    <Box lineHeight={2} fontWeight="fontWeightBold">
+                      Finish game
+                    </Box>
+                  </Button>
+                </Link>
+                <Button
+                  className={styles.btnQRNxt}
+                  disabled={isFinishedGame()}
+                  onClick={() => setIsOpenModalQR(true)}
+                  variant="contained"
+                  color="secondary"
+                  size="large"
+                >
+                  <QRicon />
+                </Button>
+              </Box>
+            </Box>
           )}
         </Box>
       )}
+      {!isAllPassed() ? (
+        <div className={styles.btnsBottom}>
+          {isActiveTimer ? (
+            <Button
+              disabled={isFinishedGame() || isAllPassed()}
+              className={styles.btnPlay}
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={() => {
+                onPauseGame();
+              }}
+            >
+              pause
+            </Button>
+          ) : (
+            <Button
+              disabled={isFinishedGame() || isAllPassed()}
+              className={styles.btnPlay}
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={() => {
+                onPlayGame();
+              }}
+            >
+              <Box fontSize={18}>play</Box>
+            </Button>
+          )}
 
-      <div className={styles.btnsBottom}>
-        {isActiveTimer ? (
           <Button
             disabled={isFinishedGame() || isAllPassed()}
-            className={styles.btnPlay}
+            className={styles.btnPass}
             variant="contained"
             color="primary"
             size="large"
             onClick={() => {
-              onPauseGame();
+              if (gameSessionState.startTime !== 0) {
+                const updatedSession = currGameSessionState.map((el, index) => {
+                  if (index === currPlayerIndex) {
+                    return {
+                      ...el,
+                      timeToLeft: getNewTime(el.timeToLeft),
+                      hasPassed: true,
+                    };
+                  }
+                  return el;
+                });
+                onPlay(updatedSession);
+              } else {
+                const updatedSession = currGameSessionState.map((el, index) => {
+                  if (index === currPlayerIndex) {
+                    return {
+                      ...el,
+
+                      hasPassed: true,
+                    };
+                  }
+                  return el;
+                });
+                onPlay(updatedSession);
+              }
+              setCurrPlayerIndex(
+                currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
+              );
+              setIsActiveTimer(true);
             }}
           >
-            pause
+            <Typography variant="h4">
+              <Box fontWeight="bold">pass</Box>
+            </Typography>
           </Button>
-        ) : (
-          <Button
-            disabled={isFinishedGame() || isAllPassed()}
-            className={styles.btnPlay}
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={() => {
-              onPlayGame();
-            }}
-          >
-            play
-          </Button>
-        )}
+          {!isActiveTimer ? (
+            <>
+              <Link to="/finished-game" className={styles.btnFinish}>
+                <Button variant="contained" color="secondary" size="large" fullWidth>
+                  <Box lineHeight={2} fontWeight="fontWeightBold">
+                    Finish game
+                  </Box>
+                </Button>
+              </Link>
+              <Button
+                disabled={isFinishedGame()}
+                onClick={() => setIsOpenModalQR(true)}
+                className={styles.btnQR}
+                variant="contained"
+                color="secondary"
+                size="large"
+              >
+                <QRicon />
+              </Button>
+            </>
+          ) : null}
+        </div>
+      ) : null}
 
-        <Button
-          disabled={isFinishedGame() || isAllPassed()}
-          className={styles.btnPass}
-          variant="contained"
-          color="secondary"
-          size="large"
-          onClick={() => {
-            if (gameSessionState.startTime !== 0) {
-              const updatedSession = currGameSessionState.map((el, index) => {
-                if (index === currPlayerIndex) {
-                  return {
-                    ...el,
-                    timeToLeft: getNewTime(el.timeToLeft),
-                    hasPassed: true,
-                  };
-                }
-                return el;
-              });
-              onPlay(updatedSession);
-            } else {
-              const updatedSession = currGameSessionState.map((el, index) => {
-                if (index === currPlayerIndex) {
-                  return {
-                    ...el,
-
-                    hasPassed: true,
-                  };
-                }
-                return el;
-              });
-              onPlay(updatedSession);
-            }
-            setCurrPlayerIndex(
-              currPlayerIndex === gameSessionState.players.length - 1 ? 0 : currPlayerIndex + 1,
-            );
-            setIsActiveTimer(true);
-          }}
-        >
-          pass
-        </Button>
-
-        <Link to="/finished-game" className={styles.btnFinish}>
-          <Button variant="contained" color="secondary" size="large">
-            <Box lineHeight={2} fontWeight="fontWeightBold">
-              Finish game
-            </Box>
-          </Button>
-        </Link>
-        <Button
-          disabled={isFinishedGame()}
-          onClick={() => setIsOpenModalQR(true)}
-          className={styles.btnQR}
-          variant="contained"
-          color="secondary"
-          size="large"
-        >
-          <QRicon />
-        </Button>
-      </div>
       {isOpenModalQR && <ModalQRCode onClose={() => setIsOpenModalQR(false)} />}
     </Wrapper>
   );
