@@ -44,7 +44,10 @@ export const PopoverInfo = (): JSX.Element => {
       >
         <Alert severity="info" icon={false}>
           <Box py={1}>
-            • Drag to set the order of players <br />• The time sets for each player
+            • Drag to set the order of players
+            <br />
+            • The time sets for each player
+            <br />• Set time for Production Phase
           </Box>
         </Alert>
       </Popover>

@@ -7,10 +7,12 @@ import { GameSessionInfo } from 'domain/GameSessionType';
 import QRicon from 'src/images/QR-icon.svg';
 import { useScreenWakeLock } from 'utils/useScreenWakeLock';
 import { ModalQRCode } from 'components/ModalQRCode';
+import { useTimeProdInfo } from 'Provider/TimeProdProvider';
 import { CurrentPlayer } from './CurrentPlayer';
 import * as styles from './game.module.css';
 import { AllPlayers } from './AllPlayers';
 import { NextPlayer } from './NextPlayer';
+import { ShortTimerWithSound } from './ShortTimerWithSound';
 
 export const Game = (): JSX.Element => {
   const [gameSessionState, setGameSessionState] = useGameSessionInfo();
@@ -18,6 +20,8 @@ export const Game = (): JSX.Element => {
   const [generation, setGeneration] = useState(gameSessionState.generation);
   const [isActiveTimer, setIsActiveTimer] = useState(gameSessionState.isActive);
   const [currPlayerIndex, setCurrPlayerIndex] = useState(gameSessionState.currPlayer);
+
+  const [prodTimeState] = useTimeProdInfo();
 
   const getDeltaTime = () => Math.floor((Date.now() - gameSessionState.startTime) / 1000);
   const getNewTime = (prevTime: number) => prevTime - getDeltaTime();
@@ -272,6 +276,11 @@ export const Game = (): JSX.Element => {
                   }
                 />
               </Box>
+              {prodTimeState.enabled ? (
+                <Box my="auto">
+                  <ShortTimerWithSound />
+                </Box>
+              ) : null}
 
               <Box marginTop="auto" display="flex" className={styles.btnsBottomNxt}>
                 <Link to="/finished-game" className={styles.btnFinishNxt}>

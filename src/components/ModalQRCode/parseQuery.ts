@@ -6,12 +6,14 @@ import { useTimeInfo } from 'Provider/TimeContex';
 import { colorToPick } from 'styles/colorsToPick';
 import { Base64 } from 'js-base64';
 import { useGameInfo } from 'Provider/GameContex';
+import { useTimeProdInfo } from 'Provider/TimeProdProvider';
 
 export const parseQuery = (stringParams: string): void => {
   const [, setFriendsState] = useFriends();
   const [, setGameState] = useGameInfo();
   const [, setTimeState] = useTimeInfo();
   const [, setGameSessionState] = useGameSessionInfo();
+  const [, setTimeProdState] = useTimeProdInfo();
 
   useEffect(() => {
     const decodedParams = Base64.fromBase64(stringParams);
@@ -69,5 +71,10 @@ export const parseQuery = (stringParams: string): void => {
       startTime: Date.now(),
       isActive: true,
     });
+
+    const timeProdParams = params.get('tp');
+    const timeProd = timeProdParams ? JSON.parse(timeProdParams) : { time: 4 * 60, enabled: false };
+
+    setTimeProdState(timeProd);
   }, [stringParams]);
 };

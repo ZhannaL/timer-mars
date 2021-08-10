@@ -7,6 +7,7 @@ import { useTimeInfo } from 'Provider/TimeContex';
 import { copyToClipboard } from 'utils/copyToClipBoard';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { useRef } from 'react';
+import { useTimeProdInfo } from 'Provider/TimeProdProvider';
 import { getQueryString } from './formQuery';
 import * as styles from './modalQRCode.module.css';
 
@@ -17,12 +18,13 @@ type Props = {
 export const ModalQRCode = ({ onClose }: Props): JSX.Element => {
   const [friendsState] = useFriends();
   const [timeState] = useTimeInfo();
+  const [prodTimeState] = useTimeProdInfo();
   const [gameSessionState] = useGameSessionInfo();
   const ref = useRef<HTMLDivElement>(null);
   const webPage = 'https://timer-mars.netlify.app/shared-game';
 
   const linkToShare = `${webPage}?gd=${Base64.encodeURI(
-    getQueryString(gameSessionState, friendsState, timeState),
+    getQueryString(gameSessionState, friendsState, timeState, prodTimeState),
   )}`;
   return (
     <Dialog onClose={onClose} open fullWidth>

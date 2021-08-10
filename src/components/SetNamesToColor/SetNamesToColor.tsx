@@ -13,6 +13,7 @@ import { SetNamesToColorItem } from './SetNamesToColorItem';
 import { SetTime } from './SetTime';
 import * as styles from './setNamesToColor.module.css';
 import { PopoverInfo } from './PopoverInfo';
+import { SetTimeProd } from './SetTimeProd';
 
 export const SetNamesToColor = (): JSX.Element => {
   const [gameState, setGameState] = useGameInfo();
@@ -86,7 +87,7 @@ export const SetNamesToColor = (): JSX.Element => {
         </Box>
       </Header>
       <Grow in={isSlided} mountOnEnter unmountOnExit>
-        <div style={{ width: '100%' }}>
+        <Box width="100%" display="flex" flexDirection="column" flexGrow={1}>
           <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable droppableId={styles.draggableList}>
               {(provided) => (
@@ -128,35 +129,37 @@ export const SetNamesToColor = (): JSX.Element => {
               setGameState(updatedItems);
             }}
           />
-
-          <div className={styles.btnBack}>
-            <Button
-              onClick={() => {
-                onPrevPage();
-              }}
-              variant="contained"
-              color="secondary"
-              startIcon={<ArrowBackIcon />}
-            >
-              Friends List
-            </Button>
-          </div>
-          <div className={styles.btnStartGame}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              className={styles.rightBtn}
-              onClick={() => {
-                onGamePage();
-              }}
-            >
-              <Box lineHeight={2} fontWeight="fontWeightBold">
-                Start game
-              </Box>
-            </Button>
-          </div>
-        </div>
+          <SetTimeProd />
+          <Box display="flex" flexDirection="column" marginTop="auto">
+            <div className={styles.btnBack}>
+              <Button
+                onClick={() => {
+                  onPrevPage();
+                }}
+                variant="contained"
+                color="secondary"
+                startIcon={<ArrowBackIcon />}
+              >
+                Friends List
+              </Button>
+            </div>
+            <div className={styles.btnStartGame}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                className={styles.rightBtn}
+                onClick={() => {
+                  onGamePage();
+                }}
+              >
+                <Box lineHeight={2} fontWeight="fontWeightBold">
+                  Start game
+                </Box>
+              </Button>
+            </div>
+          </Box>
+        </Box>
       </Grow>
     </Wrapper>
   );
