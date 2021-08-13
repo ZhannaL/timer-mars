@@ -1,4 +1,5 @@
-import { Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
+
 import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@material-ui/core';
 import { Wrapper } from 'components/Wrapper';
@@ -8,6 +9,7 @@ import QRicon from 'src/images/QR-icon.svg';
 import { useScreenWakeLock } from 'utils/useScreenWakeLock';
 import { ModalQRCode } from 'components/ModalQRCode';
 import { useTimeProdInfo } from 'Provider/TimeProdProvider';
+import { Confirm } from 'components/Confirm';
 import { CurrentPlayer } from './CurrentPlayer';
 import * as styles from './game.module.css';
 import { AllPlayers } from './AllPlayers';
@@ -283,13 +285,19 @@ export const Game = (): JSX.Element => {
               ) : null}
 
               <Box marginTop="auto" display="flex" className={styles.btnsBottomNxt}>
-                <Link to="/finished-game" className={styles.btnFinishNxt}>
-                  <Button variant="contained" color="secondary" size="large" fullWidth>
+                <Confirm onConfirm={() => navigate('/finished-game')}>
+                  <Button
+                    className={styles.btnFinishNxt}
+                    variant="contained"
+                    color="secondary"
+                    size="large"
+                    fullWidth
+                  >
                     <Box lineHeight={2} fontWeight="fontWeightBold">
                       Finish game
                     </Box>
                   </Button>
-                </Link>
+                </Confirm>
                 <Button
                   className={styles.btnQRNxt}
                   disabled={isFinishedGame()}
@@ -379,13 +387,15 @@ export const Game = (): JSX.Element => {
           </Button>
           {!isActiveTimer ? (
             <>
-              <Link to="/finished-game" className={styles.btnFinish}>
-                <Button variant="contained" color="secondary" size="large" fullWidth>
-                  <Box lineHeight={2} fontWeight="fontWeightBold">
-                    Finish game
-                  </Box>
-                </Button>
-              </Link>
+              <Box className={styles.btnFinish}>
+                <Confirm onConfirm={() => navigate('/finished-game')}>
+                  <Button variant="contained" color="secondary" size="large" fullWidth>
+                    <Box lineHeight={2} fontWeight="fontWeightBold">
+                      Finish game
+                    </Box>
+                  </Button>
+                </Confirm>
+              </Box>
               <Button
                 disabled={isFinishedGame()}
                 onClick={() => setIsOpenModalQR(true)}

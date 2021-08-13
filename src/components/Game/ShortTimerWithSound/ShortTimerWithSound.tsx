@@ -25,14 +25,14 @@ export const ShortTimerWithSound = (): JSX.Element => {
           </Box>
         </Typography>
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
           size="large"
           onClick={() => {
             setIsActiveTimer(!isActiveTimer);
           }}
         >
-          <Box fontSize={18}>{isActiveTimer ? 'pause' : 'start'}</Box>
+          <Box fontSize={21}>{isActiveTimer ? ' pause ' : ' start '}</Box>
         </Button>
       </Box>
       <Typography component="div" variant="h4" align="center">
