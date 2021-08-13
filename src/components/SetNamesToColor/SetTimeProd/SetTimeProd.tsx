@@ -18,7 +18,7 @@ export const SetTimeProd = (): JSX.Element => {
     setTimeState({ time: time * 60, enabled: event.target.checked });
   };
   return (
-    <Box display="flex" flexDirection="column" width="100%" py={1}>
+    <Box display="flex" flexDirection="column" width="100%" py={1} className={styles.setTimeLine}>
       <Box px={2}>
         <FormControlLabel
           control={<Switch checked={checked} onChange={handleChange} />}
